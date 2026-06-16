@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Gravel Calculator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#e9eef5;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.box{
+    background:white;
+    width:350px;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+h2{
+    text-align:center;
+    color:#1e3a8a;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    background:#16a34a;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    transform:scale(1.02);
+}
+
+#result{
+    margin-top:20px;
+    padding:15px;
+    border-radius:12px;
+    background:#dcfce7;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    color:#166534;
+}
+
+#rate,
+#saveBtn{
+    display:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>🏗 Gravel Calculator</h2>
+
+    <button onclick="openSettings()">⚙️ Settings</button>
+
+    
+
+    <input type="number" id="length" placeholder="Enter Length (ft)">
+
+    <input type="number" id="width" placeholder="Enter Width (ft)">
+
+    <input type="number" id="volume" placeholder="Required Gravel (ft³)">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <button onclick="clearFields()">Clear</button>
+
+    <div id="result"></div>
+
+    <p style="text-align:center;color:gray;">
+        Made by Harsh
+    </p>
+
+</div>
+
+<script>
+
+window.onload = function() {
+
+    let savedRate = localStorage.getItem("gravelRate");
+
+    if(savedRate){
+        document.getElementById("rate").value = savedRate;
+    }
+
+};
+
+function openSettings(){
+
+    let password = prompt("Enter Password");
+
+    if(password !== "1234"){
+        alert("Wrong Password");
+        return;
+    }
+
+    let newRate = prompt(
+        "Current Rate: " +
+        (localStorage.getItem("gravelRate") || "Not Set") +
+        "\n\nEnter New Rate:"
+    );
+
+    if(newRate && newRate.trim() !== ""){
+
+        localStorage.setItem("gravelRate", newRate);
+
+        alert("Rate Saved Successfully!");
+
+    }
+
+}
+
+function saveRate(){
+
+    let rate = document.getElementById("rate").value;
+
+    if(rate === ""){
+        alert("Enter Rate First");
+        return;
+    }
+
+    localStorage.setItem("gravelRate", rate);
+
+    alert("Rate Saved Successfully");
+
+}
+
+function calculate(){
+
+    let length = parseFloat(document.getElementById("length").value);
+    let width = parseFloat(document.getElementById("width").value);
+    let volume = parseFloat(document.getElementById("volume").value);
+
+    if(isNaN(length) || isNaN(width) || isNaN(volume)){
+
+        document.getElementById("result").innerHTML =
+        "⚠️ Please fill all fields";
+
+        return;
+    }
+
+    let rate = localStorage.getItem("gravelRate");
+
+    if(!rate){
+
+        document.getElementById("result").innerHTML =
+        "⚠️ First Save Rate In Settings";
+
+        return;
+    }
+
+    let height = volume / (length * width);
+
+    let feet = Math.floor(height);
+
+    let inches = Math.round((height - feet) * 12);
+
+    let amount = volume * rate;
+
+    document.getElementById("result").innerHTML =
+    "Fill Height: " + feet + " ft " + inches + " inch<br><br>" +
+    "Total Amount: ₹" + amount;
+
+}
+
+function clearFields(){
+
+    document.getElementById("length").value = "";
+    document.getElementById("width").value = "";
+    document.getElementById("volume").value = "";
+    document.getElementById("result").innerHTML = "";
+
+}
+
+</script>
+
+</body>
+</html>
